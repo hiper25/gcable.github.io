@@ -1,0 +1,5 @@
+#EXTM3U x-tvg-url="646c0edbe629f9b6129ece9f25fb1936246bba09f9ea519d761a315a43955975.xml.gz"
+#EXTINF:-1 tvg-id="1514" tvg-name="求索纪录（高清付费）" tvg-chno="12" group-title="特色影视体育" region-code="7000" isTVAnyTime="1" isStartOver="1" tvg-logo="https://hiper25.github.io/gcable/logos/1514.png" is-playable="true" stream-verification="manifest" catchup="default" catchup-days="7" catchup-source="http://172.16.149.220:8070/live/1514_7500.m3u8?starttime=${(b)timestamp}&endtime=${(e)timestamp}",求索纪录（高清付费）
+http://172.16.149.220:8070/live/1514_7500.m3u8
+#EXTINF:-1 tvg-id="1914" tvg-name="精彩影视（高清付费）" tvg-chno="21" group-title="特色影视体育" region-code="7000" isTVAnyTime="1" isStartOver="1" tvg-logo="https://hiper25.github.io/gcable/logos/1914.png" is-playable="true" stream-verification="manifest" catchup="default" catchup-days="7" catchup-source="http://172.16.149.220:8070/live/1914_7500.m3u8?starttime=${(b)timestamp}&endtime=${(e)timestamp}",精彩影视（高清付费）
+http://172.16.149.220:8070/live/1914_7500.m3u8

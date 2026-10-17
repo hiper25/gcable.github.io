@@ -1,0 +1,170 @@
+{
+  "佛山顺德": {
+    "city": "佛山顺德",
+    "locationName": "顺德",
+    "locationCode": "1680",
+    "weather": "多云",
+    "temperature": "27℃~35℃",
+    "wind": "1-2"
+  },
+  "佛山禅城": {
+    "city": "佛山禅城",
+    "locationName": "禅城",
+    "locationCode": "1601",
+    "weather": "多云",
+    "temperature": "27℃~35℃",
+    "wind": "1-2"
+  },
+  "佛山南海": {
+    "city": "佛山南海",
+    "locationName": "广州",
+    "locationCode": "1",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "广州": {
+    "city": "广州",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "深圳": {
+    "city": "深圳",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "江门": {
+    "city": "江门",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "东莞": {
+    "city": "东莞",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "珠海": {
+    "city": "珠海",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "中山": {
+    "city": "中山",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "肇庆": {
+    "city": "肇庆",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "韶关": {
+    "city": "韶关",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "惠州": {
+    "city": "惠州",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "清远": {
+    "city": "清远",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "湛江": {
+    "city": "湛江",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "汕头": {
+    "city": "汕头",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "梅州": {
+    "city": "梅州",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "潮州": {
+    "city": "潮州",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "河源": {
+    "city": "河源",
+    "locationName": "广州",
+    "locationCode": "101",
+    "weather": "多云",
+    "temperature": "27℃~34℃",
+    "wind": "1-2"
+  },
+  "云浮": {
+    "city": "云浮",
+    "locationName": "云浮",
+    "locationCode": "6800",
+    "weather": "多云",
+    "temperature": "24℃~35℃",
+    "wind": "1-2"
+  },
+  "茂名": {
+    "city": "茂名",
+    "locationName": "茂名",
+    "locationCode": "3000",
+    "weather": "阵雨",
+    "temperature": "25℃~33℃",
+    "wind": "1-2"
+  },
+  "揭阳": {
+    "city": "揭阳",
+    "locationName": "潮州",
+    "locationCode": "6400",
+    "weather": "多云",
+    "temperature": "25℃~36℃",
+    "wind": "1-2"
+  }
+}

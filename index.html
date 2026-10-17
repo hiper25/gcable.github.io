@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>广东广电 省网数据中心</title>
+    <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <!-- 即时计算深浅主题，默认自动跟随系统，彻底杜绝白光/黑屏闪烁 -->
+    <script>
+        (function() {
+            const saved = localStorage.getItem('gcable_theme_mode') || 'auto';
+            let effective = saved;
+            if (saved === 'auto') {
+                effective = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', effective);
+        })();
+    </script>
+    <link rel="stylesheet" href="./css/style.css?v=25">
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="brand">
+                <img class="brand-logo-img" src="./favicon.ico" alt="GCable">
+                <div>
+                    <h1>广东广电 省网数据中心</h1>
+                    <p class="brand-sub">全省广电组播目录 · 7天时移回看库 · 频道频点索引</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="copyM3U(this)">
+                    <svg class="btn-svg" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                    复制 M3U 订阅源
+                </button>
+                <button class="btn btn-accent" onclick="copyEPG(this)">
+                    <svg class="btn-svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    复制 7天 EPG
+                </button>
+                <button class="btn btn-purple" onclick="copyGudouM3U(this)">
+                    <svg class="btn-svg" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+                    谷豆单播源
+                </button>
+                <button class="btn" onclick="exportTxt(this)">
+                    <svg class="btn-svg" viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg>
+                    复制组播 TXT
+                </button>
+                <a class="btn" id="download-m3u" data-playlist-download href="./playlist.m3u" download="gcable_multicast.m3u">
+                    <svg class="btn-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    下载 M3U
+                </a>
+                
+                <!-- 3档模式切换：彩色原生矢量 SVG，全平台不乱码、不黑屏 -->
+                <div class="theme-segmented" role="group" aria-label="显示主题">
+                    <button class="theme-seg-btn" id="theme-btn-light" onclick="setThemeMode('light')" title="切换日间浅色模式">
+                        <svg class="theme-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                        <span class="theme-text">日间</span>
+                    </button>
+                    <button class="theme-seg-btn" id="theme-btn-dark" onclick="setThemeMode('dark')" title="切换夜间深色模式">
+                        <svg class="theme-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#818cf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                        <span class="theme-text">夜间</span>
+                    </button>
+                    <button class="theme-seg-btn active" id="theme-btn-auto" onclick="setThemeMode('auto')" title="跟随系统自动调节">
+                        <svg class="theme-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        <span class="theme-text">自动</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <details id="site-overview" class="site-overview" open>
+            <summary>订阅下载、天气与通告</summary>
+        <!-- 手机端快捷订阅网格 (手机专显，电脑端隐藏) -->
+        <div class="mobile-quick-actions">
+            <button class="btn btn-primary" onclick="copyM3U(this)">
+                <svg class="btn-svg" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                复制 M3U 订阅
+            </button>
+            <button class="btn btn-accent" onclick="copyEPG(this)">
+                <svg class="btn-svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                复制 7天 EPG
+            </button>
+            <button class="btn btn-purple" onclick="copyGudouM3U(this)">
+                <svg class="btn-svg" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+                谷豆单播源
+            </button>
+            <button class="btn btn-amber" onclick="exportTxt(this)">
+                <svg class="btn-svg" viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg>
+                复制组播 TXT
+            </button>
+            <a class="btn mobile-playlist-download" data-playlist-download href="./playlist.m3u" download="gcable_multicast.m3u">
+                <svg class="btn-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                下载当前地区 M3U
+            </a>
+        </div>
+
+        <!-- 通告栏 (全省通告 + 地区专属通告) -->
+        <div class="banner-row">
+            <div class="notice-container" id="notice-container">
+            </div>
+        </div>
+
+        <!-- 自动无缝水平滚动天气栏 -->
+        <div class="weather-scroll-container" tabindex="0" role="region" aria-label="各地天气，自动滚动，聚焦暂停滚动">
+            <div class="weather-scroll-track" id="weather-track">
+                <div class="weather-chip"><b>全省天气</b> <span>正在连接气象台站...</span></div>
+            </div>
+        </div>
+        </details>
+
+        <!-- 控制区 -->
+        <div class="controls-card">
+            <!-- 搜索框与工具条 -->
+            <label class="search-label" for="search-kw">查找频道</label>
+            <div class="search-toolbar">
+                <div class="search-wrapper">
+                    <span class="search-icon">
+                        <svg class="search-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </span>
+                    <input type="search" id="search-kw" class="search-box" placeholder="频道名、编号、ID 或组播 IP" oninput="applyFilters()">
+                    <button id="search-clear" class="search-clear" type="button" aria-label="清空搜索" hidden>×</button>
+                </div>
+                
+                <div class="toolbar-right">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="only-replay" onchange="applyFilters()">
+                        <span class="checkbox-indicator"></span>
+                        <span>只看支持时移</span>
+                    </label>
+
+                    <div class="view-switcher" role="group" aria-label="频道显示方式">
+                        <button class="view-btn active" id="btn-view-card" onclick="switchView('card')" aria-pressed="true">
+                            <svg class="btn-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                            卡片
+                        </button>
+                        <button class="view-btn" id="btn-view-table" onclick="switchView('table')" aria-pressed="false">
+                            <svg class="btn-svg" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                            表格
+                        </button>
+                    </div>
+                    <button class="btn btn-sm" onclick="openHistoryModal()">
+                        <svg class="btn-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        变动日志
+                    </button>
+                </div>
+            </div>
+            <div class="search-scope-row">
+                <span id="search-scope"></span>
+                <button id="search-global" type="button" class="btn btn-sm" hidden>全网查找</button>
+                <button id="reset-filters" type="button" class="btn btn-sm" title="清空搜索、分类、源站分组和时移筛选，保留当前地区" hidden>重置筛选</button>
+                <div class="match-badge">
+                    匹配到 <b id="match-count" role="status" aria-live="polite" aria-atomic="true">—</b> 频道
+                </div>
+            </div>
+            <details id="advanced-filters" class="advanced-filters" open>
+                <summary><span>地区与分类筛选</span><span id="active-filter-summary">全网总表 · 全部</span></summary>
+            <!-- 维度一：内容分类 (全部 -> 4K -> 央视 -> 卫视 -> 港澳台...) -->
+            <div class="filter-section-title">
+                <span>内容属性分类 (按频道节目属性，可横向滚动)</span>
+            </div>
+            <div class="categories-row" id="cat-pills">
+                <div class="cat-btn active" data-cat="全部" onclick="setCategory('全部')">全部</div>
+                <div class="cat-btn" data-cat="4K超高清" onclick="setCategory('4K超高清')">4K超高清</div>
+                <div class="cat-btn" data-cat="央视频道" onclick="setCategory('央视频道')">央视频道</div>
+                <div class="cat-btn" data-cat="卫视频道" onclick="setCategory('卫视频道')">卫视频道</div>
+                <div class="cat-btn" data-cat="港澳台专区" onclick="setCategory('港澳台专区')">港澳台专区</div>
+                <div class="cat-btn" data-cat="广佛本地" onclick="setCategory('广佛本地')">广佛本地</div>
+                <div class="cat-btn" data-cat="珠三角地市" onclick="setCategory('珠三角地市')">珠三角地市</div>
+                <div class="cat-btn" data-cat="粤东西北县市" onclick="setCategory('粤东西北县市')">粤东西北县市</div>
+                <div class="cat-btn" data-cat="特色影视体育" onclick="setCategory('特色影视体育')">特色影视体育</div>
+                <div class="cat-btn" data-cat="测试专区" onclick="setCategory('测试专区')">测试专区</div>
+                <div class="cat-btn" data-cat="广播电台" onclick="setCategory('广播电台')">广播电台</div>
+                <div class="cat-btn" data-cat="其他综合" onclick="setCategory('其他综合')">其他综合</div>
+            </div>
+            <div class="status-pill-item picker-field picker-field-source">
+                <span id="source-group-label">源站分组</span>
+                <button id="source-group-select" type="button" class="picker-trigger" aria-labelledby="source-group-label source-group-text" aria-haspopup="dialog" aria-expanded="false" aria-controls="filter-picker">
+                    <span id="source-group-text" class="picker-trigger-text">全部分组</span>
+                    <svg class="picker-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+            </div>
+
+            <!-- 维度二：地市频道号排列 (省会广州优先，接着深圳、珠海、佛山...阳江排在粤西标准顺位) -->
+            <div class="filter-section-title">
+                <span>地市频道排列 (按源站频道号排序，可横向滚动)</span>
+            </div>
+            <div class="cities-row" id="city-pills">
+                <div class="city-btn active" data-city="全网总表" onclick="setCity('全网总表')">全网总表</div>
+                <div class="city-btn" data-city="广州" onclick="setCity('广州')">广州 (020)</div>
+                <div class="city-btn" data-city="深圳" onclick="setCity('深圳')">深圳 (755)</div>
+                <div class="city-btn" data-city="珠海" onclick="setCity('珠海')">珠海 (1201)</div>
+                <div class="city-btn" data-city="佛山" onclick="setCity('佛山')">佛山 (1684)</div>
+                <div class="city-btn" data-city="东莞" onclick="setCity('东莞')">东莞 (5000)</div>
+                <div class="city-btn" data-city="中山" onclick="setCity('中山')">中山 (6000)</div>
+                <div class="city-btn" data-city="江门" onclick="setCity('江门')">江门 (2850)</div>
+                <div class="city-btn" data-city="惠州" onclick="setCity('惠州')">惠州 (3200)</div>
+                <div class="city-btn" data-city="肇庆" onclick="setCity('肇庆')">肇庆 (2621)</div>
+                <div class="city-btn" data-city="汕头" onclick="setCity('汕头')">汕头 (2500)</div>
+                <div class="city-btn" data-city="潮州" onclick="setCity('潮州')">潮州 (3100)</div>
+                <div class="city-btn" data-city="揭阳" onclick="setCity('揭阳')">揭阳 (6500)</div>
+                <div class="city-btn" data-city="汕尾" onclick="setCity('汕尾')">汕尾 (3620)</div>
+                <div class="city-btn" data-city="湛江" onclick="setCity('湛江')">湛江 (3202)</div>
+                <div class="city-btn" data-city="茂名" onclick="setCity('茂名')">茂名 (3000)</div>
+                <div class="city-btn" data-city="阳江" onclick="setCity('阳江')">阳江 (4001)</div>
+                <div class="city-btn" data-city="韶关" onclick="setCity('韶关')">韶关 (2100)</div>
+                <div class="city-btn" data-city="清远" onclick="setCity('清远')">清远 (4200)</div>
+                <div class="city-btn" data-city="梅州" onclick="setCity('梅州')">梅州 (3412)</div>
+                <div class="city-btn" data-city="河源" onclick="setCity('河源')">河源 (3800)</div>
+                <div class="city-btn" data-city="云浮" onclick="setCity('云浮')">云浮 (6800)</div>
+            </div>
+            <div class="status-pill-item picker-field picker-field-district">
+                <span id="district-label">其他频道配置</span>
+                <button id="district-select" type="button" class="picker-trigger" aria-labelledby="district-label district-text" aria-haspopup="dialog" aria-expanded="false" aria-controls="filter-picker">
+                    <span id="district-text" class="picker-trigger-text">选择配置</span>
+                    <svg class="picker-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+            </div>
+
+
+            <!-- 所选区域统计，EPG 数量包含源站占位记录 -->
+            <div class="stats-summary-row">
+                <div class="stat-badge-item">
+                    <span>独立频道：</span>
+                    <b id="summary-total">—</b>
+                </div>
+                <div class="stat-badge-item">
+                    <span>组播地址：</span>
+                    <b id="summary-rtp" style="color:var(--accent);">—</b>
+                </div>
+                <div class="stat-badge-item">
+                    <span>节目单记录：</span>
+                    <b id="summary-epg" style="color:var(--warning);">—</b>
+                </div>
+                <div class="stat-badge-item"><span id="data-coverage" title="数据采集覆盖和时间">正在读取采集信息…</span></div>
+            </div>
+            </details>
+        </div>
+
+        <!-- 视图 1：卡片视图容器 -->
+        <div id="channels-grid" class="channels-grid">正在加载全省频道列表...</div>
+
+        <!-- 视图 2：表格视图容器 -->
+        <div id="channels-table-wrap" class="table-view-container" role="region" aria-label="频道表格，可横向滚动查看全部列" tabindex="0" aria-describedby="table-scroll-hint">
+            <p id="table-scroll-hint" class="table-scroll-hint">左右滚动可查看完整地址、时移状态和详情操作。</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:60px;">编号</th>
+                        <th style="width:230px;">频道标识与名称</th>
+                        <th style="width:110px;">分类</th>
+                        <th style="width:70px;">ID</th>
+                        <th>组播地址 (RTP)</th>
+                        <th style="width:110px;">7天时移</th>
+                        <th style="width:110px; text-align:right;">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="channels-table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <dialog id="filter-picker" class="filter-picker" aria-labelledby="filter-picker-title" aria-describedby="filter-picker-description">
+        <div class="picker-header">
+            <h2 id="filter-picker-title">选择配置</h2>
+            <button id="filter-picker-close" type="button" class="picker-close" aria-label="关闭选择窗口">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+            </button>
+        </div>
+        <p id="filter-picker-description" class="picker-description" tabindex="0"></p>
+        <label class="picker-search-label" for="filter-picker-search">搜索选项</label>
+        <input id="filter-picker-search" class="picker-search" type="search" placeholder="搜索名称、编码或关键词" autocomplete="off" spellcheck="false" aria-controls="filter-picker-options" autofocus>
+        <div id="filter-picker-views" class="picker-views" role="group" aria-label="配置视图" hidden></div>
+        <p id="filter-picker-status" class="picker-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        <div id="filter-picker-scroll" class="picker-scroll">
+            <div id="filter-picker-options" class="picker-options" role="group" aria-label="可选项目"></div>
+            <button id="filter-picker-more" type="button" class="picker-more" hidden>加载更多</button>
+        </div>
+    </dialog>
+
+    <!-- 侧边详情与 7 天 EPG 抽屉 (60fps Silky 平滑双向过渡) -->
+    <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer(event)">
+        <div class="drawer" id="main-drawer" role="dialog" aria-modal="true" aria-labelledby="d-title" onclick="event.stopPropagation()">
+            <div class="drawer-header">
+                <!-- 动画频道专属身份看板 (固定在顶部，永不滚出视口) -->
+                <div class="channel-hero-card" id="channel-hero">
+                    <div class="hero-left">
+                        <div class="hero-emblem-wrap" id="d-emblem"></div>
+                        <div class="hero-info">
+                            <div class="hero-title-row">
+                                <span class="hero-title" id="d-title">频道名称</span>
+                                <span class="hero-live-badge" id="hero-live-badge">
+                                    <span class="live-dot-pulse"></span>直播频道
+                                </span>
+                            </div>
+                            <div class="hero-meta-row">
+                                <span class="hero-cat" id="d-cat">分类</span>
+                                <span class="hero-no" id="d-num">#0 · 频道ID: 0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-sm" id="drawer-close" onclick="hideDrawer()" style="flex-shrink:0;">✕ 关闭</button>
+            </div>
+            <nav class="drawer-section-nav" aria-label="频道详情分区">
+                <button type="button" class="btn btn-sm" data-drawer-target="d-streams">播放地址</button>
+                <button type="button" class="btn btn-sm" data-drawer-target="d-technical">技术参数</button>
+                <button type="button" class="btn btn-sm" data-drawer-target="d-epg-section">节目单</button>
+            </nav>
+            <div class="drawer-body">
+
+                <!-- 基本参数详情 -->
+                <!-- 频道参数与流媒体直链仪表盘 -->
+                <div class="info-panel">
+                    <div class="panel-status-bar">
+                        <div class="status-pill-item">
+                            <span id="d-region-label" class="status-pill-label">地区来源:</span>
+                            <button id="d-region" type="button" class="picker-trigger" aria-labelledby="d-region-label d-region-text" aria-haspopup="dialog" aria-expanded="false" aria-controls="filter-picker">
+                                <span id="d-region-text" class="picker-trigger-text">选择地区</span>
+                                <svg class="picker-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- 顶行：业务状态微标签 -->
+                    <div class="panel-status-bar">
+                        <div class="status-pill-item">
+                            <span class="status-pill-label">所属分类:</span>
+                            <b class="status-pill-val" id="d-cat-detail">-</b>
+                        </div>
+                        <div class="status-pill-item">
+                            <span class="status-pill-label">7天回看:</span>
+                            <b class="status-pill-val" id="d-replay" style="color:var(--accent);">-</b>
+                        </div>
+                    </div>
+                    <div class="panel-status-bar">
+                        <span class="status-pill-item"><span class="status-pill-label">源站分组:</span><b class="status-pill-val" id="d-source-groups">—</b></span>
+                        <span class="status-pill-item" id="d-start-over">—</span>
+                    </div>
+
+                    <!-- 流媒体地址独立交互复制条目 -->
+                    <div class="stream-entries-wrap" id="d-streams" tabindex="-1">
+                        <div class="stream-entry" id="row-rtp">
+                            <div class="stream-entry-label">
+                                <span class="stream-dot rtp"></span>
+                                <span>组播地址 (RTP)</span>
+                            </div>
+                            <div class="stream-entry-body">
+                                <span class="stream-code rtp" id="d-rtp">-</span>
+                                <button class="btn btn-sm" id="btn-copy-rtp-d" onclick="copyCurrentRtp(this)">复制</button>
+                            </div>
+                        </div>
+
+                        <div class="stream-entry" id="row-gudou">
+                            <div class="stream-entry-label">
+                                <span class="stream-dot gudou"></span>
+                                <span>谷豆单播流 (HLS)</span>
+                            </div>
+                            <div class="stream-entry-body">
+                                <span class="stream-code gudou" id="d-gudou">-</span>
+                                <button class="btn btn-sm btn-purple" id="btn-copy-gudou-d" onclick="copyCurrentGudou(this)">复制</button>
+                            </div>
+                            <span id="d-gudou-status" style="font-size:11px;color:var(--text-muted);"></span>
+                        </div>
+
+                        <div class="stream-entry" id="row-catchup">
+                            <div class="stream-entry-label">
+                                <span class="stream-dot tpl"></span>
+                                <span>7天时移切片模板</span>
+                            </div>
+                            <div class="stream-entry-body">
+                                <span class="stream-code tpl" id="d-catchup-tpl">-</span>
+                                <button class="btn btn-sm btn-primary" id="btn-copy-catchup-tpl" onclick="copyNativeCatchupTemplate(this)">复制模板</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DVB 频点/PID 参数矩阵 (3x2 紧凑精致网格) -->
+                    <div class="dvb-section" id="d-technical" tabindex="-1">
+                        <div class="dvb-section-header">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+                            <span>DVB 物理频点与调制参数 (广播射频频点)</span>
+                        </div>
+                        <div class="dvb-grid" id="d-dvb-grid">
+                        </div>
+                        <details><summary style="font-size:11px;color:var(--text-muted);margin-top:8px;cursor:pointer;">原始 DVB 参数</summary><div class="rtp-code" id="d-delivery"></div></details>
+                    </div>
+                    <details><summary style="font-size:11px;color:var(--text-muted);margin-top:8px;cursor:pointer;">原始频道资料</summary><pre id="d-source-metadata" style="white-space:pre-wrap;overflow-wrap:anywhere;font-family:inherit;font-size:11px;line-height:1.6;"></pre></details>
+                </div>
+
+                <!-- 7 天 EPG 与时移日程 -->
+                <div id="d-epg-section" tabindex="-1">
+                    <div style="font-size:13px; font-weight:700; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <span>节目指南与回看流</span>
+                        <span id="d-epg-count" role="status" aria-live="polite" style="font-size:11px; color:var(--text-muted); font-variant-numeric:tabular-nums;">正在载入...</span>
+                    </div>
+                    
+                    <!-- 日期来自当前地区节目单 -->
+                    <div class="date-tabs-wrapper" id="date-tabs" aria-label="节目日期，可横向滚动">
+                    </div>
+
+                    <div id="d-epg-list" class="epg-timeline-list">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 频道变动与可用性追踪历史弹窗 -->
+    <div id="history-modal" class="drawer-overlay" onclick="closeHistoryModal(event)">
+        <div class="drawer" role="dialog" aria-modal="true" aria-label="频道变动与可用性追踪记录" style="max-width: 680px;" onclick="event.stopPropagation()">
+            <div class="drawer-header">
+                <div style="font-size:16px; font-weight:700; display:flex; align-items:center; gap:8px;">
+                    <svg class="btn-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>频道变动与可用性追踪记录</span>
+                </div>
+                <button class="btn btn-sm" onclick="closeHistoryModal()">✕ 关闭</button>
+            </div>
+            <div class="drawer-body" id="history-modal-body" tabindex="0" role="region" aria-label="变动日志内容">
+                正在加载追踪记录...
+            </div>
+        </div>
+    </div>
+
+    <!-- 简约圆形返回顶部按钮 (纯净 SVG 矢量箭头，自适应深浅色，永不变成黑块) -->
+    <button class="btn-back-to-top" id="btn-back-to-top" onclick="scrollToTop()" title="返回顶部" aria-label="返回顶部">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
+    <!-- 复制成功 Toast -->
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true">✓ 已复制到剪贴板</div>
+
+    <script type="module" src="./js/app.js?v=25"></script>
+</body>
+</html>
